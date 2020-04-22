@@ -1,0 +1,10 @@
+h1  Users
+  form(method="GET")
+    input(type="text", name="q")
+    button Search
+  ul
+    each user in users
+      li
+        span= user.name
+        span 
+        a(href='/users/update/'+ user.id) Update
