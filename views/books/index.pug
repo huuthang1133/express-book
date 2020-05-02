@@ -1,0 +1,32 @@
+extends ../layouts/common.pug
+block content
+  .container.position-relative
+    h1  Books
+      p
+        a(href="/books/create") New
+      p
+        a(href="/books/update") Update
+      form(action="/books/search", method="GET")
+        input(type="text", name="q")
+        button Search
+    .row.mb-3
+      each book in books
+        .col-3
+          .card.mb-3
+            img.card-img-top(src="https://loremflickr.com/320/240")
+            .card-body
+              h5.card-title= book.title
+              p.card-text= book.description							
+              a.btn.btn-primary(href='/cart/add/' + book._id) Add to cart
+    nav(aria-label='Page navigation example')
+      ul.pagination
+        li.page-item
+        a.page-link(href='#') Previous
+        li.page-item
+        a.page-link(href='https://smoggy-artistic-success.glitch.me/books?page=1') 1
+        li.page-item
+        a.page-link(href='https://smoggy-artistic-success.glitch.me/books?page=2') 2
+        li.page-item
+        a.page-link(href='https://smoggy-artistic-success.glitch.me/books?page=3') 3
+        li.page-item
+        a.page-link(href='#') Next

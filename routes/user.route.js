@@ -1,66 +1,24 @@
 var express = require('express');
 var router = express.Router();
 
-var shortid = require('shortid');
-var db = require('../db');
+var controllers = require('../controllers/user.controller');
+var validate = require('../validate/user.validate');
+var middleware = require('../middlewares/cookie.middleware');
 
-var users = db.get('users').value();
+var arrCookie = [];
 
-router.get('/',(req,res) =>{
-  res.render('users/index.pug', {
-    users: users
-  });
-});
+router.get('/' ,controllers.index);
 
-router.get('/create', function(req,res){
-  res.render('users/create.pug')
-});
+router.get('/create' ,controllers.create);
 
-router.post('/create', function(req,res){
-  req.body.id = shortid.generate();
-  db.get('users').push(req.body).write();
-  res.redirect('/users');
-});
+router.post('/create', validate.postCreate, controllers.postCreate);
 
-router.get('/update', function(req,res){
-  res.render('users/update.pug', {
-    users: users
-  });
-});
+router.get('/update' , controllers.update);
 
-router.get('/update/:id', function(req,res){
-  var id = req.params.id;
-  var user = db.get('users').find({id: id}).value();
-  res.render('users/view.pug',{
-    user: user
-  });
-});
+router.get('/update/:id', controllers.updateId);
 
-router.post('/update/:id', function(req,res){
-  var id = req.params.id;
-  var data = req.body;
-  if (!data.name) {
-    data.name = db.get('users').find({id: id}).value().name;
-  }
-  db.get('users')
-    .find({ id: id })
-    .assign({ name: data.name, book: data.book})
-    .write()
-  res.redirect('/users');
-  res.render('index.pug',{
-    users: users
-  })  
-});
+router.post('/update/:id', validate.postUpdateId, controllers.postUpdateId);
 
-router.get('/delete/:id', function(req,res){    
-  var id = req.params.id;
-  db.get('users')
-  .remove({ id: id })
-  .write()
-  res.redirect('/users');
-  res.render('index.pug',{
-    users: users
-  })
-});
+router.get('/delete/:id', controllers.delete);
 
 module.exports = router;
