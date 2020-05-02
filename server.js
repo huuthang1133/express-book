@@ -5,41 +5,75 @@
 // but feel free to use whatever libraries or frameworks you'd like through `package.json`.
 var express = require("express");
 var app = express();
-var db = require('./db');
+var db = require("./db");
 
-var bookRoute = require('./routes/book.route');
+var mongoose = require('mongoose');
 
-var userRoute = require('./routes/user.route');
+var mongoURL = 'mongodb+srv://kidhv1412:19021987@cluster0-prtjf.mongodb.net/mongo-demo?retryWrites=true&w=majority'
 
-var transRoute = require('./routes/transaction.route');
+mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
+
+mongoose.connection.on('connected', function(){
+  console.log("Mongoose connected !!!");
+})
+
+
+var cookieParser = require('cookie-parser');
+
+var bookRoute = require("./routes/book.route");
+
+var userRoute = require("./routes/user.route");
+
+var authRoute = require("./routes/auth.route");
+
+var transRoute = require("./routes/transaction.route");
+
+var profileRoute = require("./routes/profile.route");
+
+var cartRoute = require("./routes/cart.route");
+
+var apiTransaction = require('./api/routes/transaction.route');
+
+var apiBook = require('./api/routes/book.route');
+
+var authMiddleware = require("./middlewares/auth.middleware");
+
+var sessionMiddleware = require("./middlewares/session.middleware");
+
 
 // our default array of dreams
 
-app.set('views', './views'); 
-app.set('view engine', 'pug');
+app.set("views", "./views");
+app.set("view engine", "pug");
 
-
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(cookieParser('asfgnalsfgn'));
 
 // make all the files in 'public' available
 // https://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
+app.use(sessionMiddleware);
 
 // https://expressjs.com/en/starter/basic-routing.html
-app.get('/', (req, res) => {
-  res.send('Welcome to my library');
+app.get("/", (req, res) => {
+  res.render("index.pug")
 });
 
+app.use('/api/transaction', apiTransaction);
+app.use('/api/book', apiBook);
 
-app.use('/users', userRoute);
+app.use('/cart', cartRoute);
 
-app.use('/books', bookRoute);
+app.use("/users", authMiddleware.requireAuth, userRoute);
 
-app.use('/transactions', transRoute);
+app.use('/auth', authRoute);
 
+app.use("/books", bookRoute);
 
+app.use("/transactions", authMiddleware.requireAuth, transRoute);
+
+app.use('/profile', authMiddleware.requireAuth, profileRoute);
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {

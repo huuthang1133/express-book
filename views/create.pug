@@ -1,9 +1,11 @@
-h1 New Book
-form(action="/books/create", method="POST")
-  label Tittle:
-  input(type="text", name="title")
-  br
-  label Description:
-  input(type="text", name="description")
-  br
-  button Create
+extends ./layouts/common.pug
+block content
+  h1 New Book
+  form(action="/books/create", method="POST")
+    label Tittle:
+    input(type="text", name="title")
+    br
+    label Description:
+    input(type="text", name="description")
+    br
+    button Create

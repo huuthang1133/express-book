@@ -1,6 +1,8 @@
-h1  Books
-
-p= book.title
-form(method="POST")
-  input(type="text", name="title")
-  button Update
+extends ../layouts/common.pug
+block content
+  .container
+    h1  Books
+    p= book.title
+    form(method="POST")
+      input(type="text", name="title")
+      button Update

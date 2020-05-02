@@ -1,24 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-var shortid = require('shortid');
-var db = require('../db');
+var controllers = require('../controllers/transaction.controller');
 
-var trans = db.get('transactions').value();
+var controllersCart = require('../controllers/cart.controller');
 
-router.get('/', function (req,res) {
-  res.render('transaction/index.pug',{
-    trans: trans    
-  });
-});
+var middleware = require('../middlewares/cookie.middleware');
 
-router.get('/create', function (req,res) {
-  var books = db.get('books').value();
-  var users = db.get('users').value();
-  res.render('transaction/view.pug',{
-    books: books,
-    users: users
-  });
-});
+router.get('/', controllers.index);
+
+router.get('/create',controllers.create);
+
+router.post('/create', controllers.postCreate);
+
+router.post('/', controllersCart.post);
+
+router.get('/:id/complete',controllers.isComplete);
 
 module.exports = router;

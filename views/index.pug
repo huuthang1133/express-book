@@ -1,14 +1,11 @@
-h1  Books
-  p
-    a(href="/books/create") New
-  p
-    a(href="/books/update") Update
-  form(action="/books/search", method="GET")
-    input(type="text", name="q")
-    button Search
-  ul
-    each book in books
-      li
-        span= book.title
-        span 
-        a(href='/books/delete/'+ book.id) Delete
+extends ./layouts/common.pug
+block content
+  h1 Welcome to my library
+  h2
+    a(href="/users") Users
+  h2
+    a(href="/books") Books
+  h2
+    a(href="/transactions") Transactios
+    
+    
